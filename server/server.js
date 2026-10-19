@@ -5,7 +5,6 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const path = require("path");
 
-// Load environment variables
 dotenv.config();
 
 const authRouter = require("./routes/auth/auth-routes");
@@ -21,7 +20,6 @@ const shopReviewRouter = require("./routes/shop/review-routes");
 
 const commonFeatureRouter = require("./routes/common/feature-routes");
 
-// ✅ MongoDB Connection (secured)
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -32,7 +30,6 @@ mongoose.connect(process.env.MONGO_URI, {
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// ✅ CORS setup for local + production (Vercel)
 app.use(
   cors({
     origin: function (origin, callback) {
@@ -57,7 +54,6 @@ app.use(
 app.use(cookieParser());
 app.use(express.json());
 
-// ✅ API Routes
 app.use("/api/auth", authRouter);
 app.use("/api/admin/products", adminProductsRouter);
 app.use("/api/admin/orders", adminOrderRouter);
@@ -71,7 +67,6 @@ app.use("/api/shop/review", shopReviewRouter);
 
 app.use("/api/common/feature", commonFeatureRouter);
 
-// ✅ Serve static files from React app in production
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../client/dist")));
   app.get("*", (req, res) => {
@@ -79,7 +74,6 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-// ✅ Default route (optional for Render health check)
 app.get("/", (req, res) => {
   res.send("API is running successfully...");
 });
