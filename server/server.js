@@ -33,7 +33,6 @@ const PORT = process.env.PORT || 5000;
 app.use(
   cors({
     origin: function (origin, callback) {
-      // Allow requests with no origin (like mobile apps or curl requests)
       if (!origin) return callback(null, true);
       if (origin.startsWith("http://localhost:")) return callback(null, true);
       if (origin === "https://fitora-six.vercel.app") return callback(null, true);
