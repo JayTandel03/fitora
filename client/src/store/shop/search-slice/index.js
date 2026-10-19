@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 // ✅ Make sure the backend base URL is correct
-const API_BASE_URL = "https://fitora-f0bf.onrender.com";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
 // ✅ Always include cookies (for login/auth)
 axios.defaults.withCredentials = true;

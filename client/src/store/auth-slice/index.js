@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const API = "https://fitora-f0bf.onrender.com";
+const API = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
 const initialState = {
   isAuthenticated: false,

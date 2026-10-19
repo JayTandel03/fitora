@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const path = require("path");
 
 // Load environment variables
 dotenv.config();
@@ -34,10 +35,13 @@ const PORT = process.env.PORT || 5000;
 // ✅ CORS setup for local + production (Vercel)
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",        // Local (development)
-      "https://fitora-six.vercel.app" // ✅ Your main production frontend
-    ],
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      if (origin.startsWith("http://localhost:")) return callback(null, true);
+      if (origin === "https://fitora-six.vercel.app") return callback(null, true);
+      return callback(new Error("Not allowed by CORS"));
+    },
     methods: ["GET", "POST", "DELETE", "PUT"],
     allowedHeaders: [
       "Content-Type",
@@ -66,6 +70,14 @@ app.use("/api/shop/search", shopSearchRouter);
 app.use("/api/shop/review", shopReviewRouter);
 
 app.use("/api/common/feature", commonFeatureRouter);
+
+// ✅ Serve static files from React app in production
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "../client/dist")));
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../client/dist/index.html"));
+  });
+}
 
 // ✅ Default route (optional for Render health check)
 app.get("/", (req, res) => {
